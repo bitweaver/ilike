@@ -1,6 +1,6 @@
 {strip}
 {if $gBitSystem->isPackageActive( 'ilike' )}
-	{bitmodule title="$moduleTitle" name="pkg_search_box"}
+	{bitmodule title="$moduleTitle" name="ilike_box"}
 		{form method="get" ipackage=ilike ifile="index.php"}
 			<div class="row">
 				<input id="fuser" name="find" size="20" type="text" accesskey="s" value="{tr}Search{/tr}" onfocus="this.value=''" />
