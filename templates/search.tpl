@@ -18,6 +18,11 @@
 				{formlabel label="Find" for="find"}
 				{forminput}
 					<input name="highlight" size="50" id="find" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
+					<br />
+					<label><input type="radio" name="join" value="AND" {if !$smarty.request.join || $smarty.request.join == 'AND'}checked="checked"{/if}/> {tr}All words{/tr}</label>
+					<br />
+					<label><input type="radio" name="join" value="OR" {if $smarty.request.join == 'OR'}checked="checked"{/if}/> {tr}Any word{/tr}</label>
+					{formhelp note='Use double quotes to search for phrases. e.g.: "apples and pears"'}
 				{/forminput}
 			</div>
 

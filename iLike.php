@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.2 2006/12/30 20:59:34 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.3 2006/12/30 22:40:21 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.3 $
  * @package  pigeonholes
  */
 
@@ -68,31 +68,35 @@ class iLike extends BitBase {
 			$pSearchHash['find'] = preg_replace( $pattern, "", $pSearchHash['find'] );
 		}
 
+		$pSearchHash['find'] = preg_replace( "!\s+!", " ", $pSearchHash['find'] );
 		if( !empty( $pSearchHash['find'] ) || !empty( $find ) ) {
 			$find = array_merge( $find, explode( ' ', $pSearchHash['find'] ) );
 		} else {
 			$this->mErrors['search'] = tra( "We need a search term for this to work." );
 		}
 
-		$columns = array( 'lc.`title`', 'lc.`data`' );
 		if( !empty( $find ) && is_array( $find ) ) {
+			// prepare find hash
 			foreach( $find as $key => $val ) {
-				if( !empty( $val ) ) {
-					$findHash[] = "%".strtoupper( $val )."%";
-				}
+				$findHash[] = "%".strtoupper( $val )."%";
 			}
 
-			$i = 0;
+			$columns = array( 'lc.`title`', 'lc.`data`' );
+			$whereSql .= empty( $whereSql ) ? ' WHERE( ' : ' AND( (';
+			$j = 0;
 			foreach( $columns as $column ) {
+				$i = 0;
+				$whereSql .= ( $j == 0 ) ? '' : ')OR( ';
 				foreach( $findHash as $val ) {
-					$whereSql .= empty( $whereSql ) ? ' WHERE ' : ( $i++ == 0 ) ? ' AND( ' : ' OR ';
+					$join = !empty( $pSearchHash['join'] ) ? $pSearchHash['join'] : 'AND';
+					$whereSql .= ( $i++ > 0 ) ? " $join " : '';
 					$whereSql .= " UPPER( $column ) LIKE ? ";
 				}
+				$whereSql .= ( $j == 0 ) ? '' : ' ) ';
+				$j++;
 				$bindVars = array_merge( $bindVars, $findHash );
 			}
-			if( $i > 0 ) {
-				$whereSql .= ") ";
-			}
+			$whereSql .= ") ";
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
