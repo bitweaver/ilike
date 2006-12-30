@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.3 2006/12/30 22:40:21 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.4 2006/12/30 23:23:45 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  * @package  pigeonholes
  */
 
@@ -128,7 +128,7 @@ class iLike extends BitBase {
 					$i = 0;
 					foreach( $lines as $number => $line ) {
 						if( $i < 3 && !empty( $line ) && stripos( $line, $val ) !== FALSE ) {
-							$aux['display_lines'][$number] = encode_email_addresses( $line );
+							$aux['display_lines'][$number + 1] = encode_email_addresses( $line );
 							$i++;
 						}
 					}
