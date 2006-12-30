@@ -3,7 +3,7 @@
 	{bitmodule title="$moduleTitle" name="ilike_box"}
 		{form method="get" ipackage=ilike ifile="index.php"}
 			<div class="row">
-				<input id="fuser" name="find" size="20" type="text" accesskey="s" value="{tr}Search{/tr}" onfocus="this.value=''" />
+				<input id="fuser" name="highlight" size="20" type="text" accesskey="s" value="{tr}Search{/tr}" onfocus="this.value=''" />
 				<br />
 				{html_options options=$contentTypes name="content_type_guid" selected=$gContent->mContentTypeGuid}
 			</div>
