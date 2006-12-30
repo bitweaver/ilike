@@ -50,7 +50,7 @@
 			{/foreach}
 		</ol>
 
-		{pagination highlight=$smarty.request.highlight}
+		{pagination highlight=$smarty.request.highlight join=$smarty.request.join}
 	</div><!-- end .body -->
 </div><!-- end .ilike -->
 {/strip}
