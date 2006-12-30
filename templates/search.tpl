@@ -36,7 +36,7 @@
 					{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}&amp;highlight={$smarty.request.find|escape:url}">{$result.title}</a> &bull; {displayname hash=$result} &bull; {$result.len|kbsize}<br />
 					<small>
 						{foreach from=$result.display_lines item=line key=number}
-							{$number}: &hellip;{$line|truncate:150:"..."}<br />
+							{$number}: &hellip;{$line|truncate:120:"..."}<br />
 						{/foreach}
 					</small>
 				</li>
