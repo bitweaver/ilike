@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="body">
-		{form legend="Extended Search"}
+		{form method="get" legend="Extended Search"}
 			<div class="row">
 				{formlabel label="Limit Search" for="content_type_guid"}
 				{forminput}
@@ -17,7 +17,7 @@
 			<div class="row">
 				{formlabel label="Find" for="find"}
 				{forminput}
-					<input name="find" size="50" id="find" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
+					<input name="highlight" size="50" id="find" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
 				{/forminput}
 			</div>
 
@@ -47,5 +47,5 @@
 
 		{pagination}
 	</div><!-- end .body -->
-</div>
+</div><!-- end .ilike -->
 {/strip}

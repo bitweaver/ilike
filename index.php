@@ -22,9 +22,9 @@ if( !empty( $_REQUEST['content_type_guid'] ) ) {
 	$_REQUEST['contentTypes'][] = $_REQUEST['content_type_guid'];
 }
 
+$_REQUEST['find'] = !empty( $_REQUEST['highlight'] ) ? $_REQUEST['highlight'] : NULL;
 $searchHash = $_REQUEST;
 if( !empty( $_REQUEST['find'] ) && $results = $gLike->search( $searchHash ) ) {
-	$_REQUEST['highlight'] = $_REQUEST['find'];
 	$gBitSmarty->assign( "results", $results );
 	$gBitSmarty->assign( "listInfo", $searchHash['listInfo'] );
 } elseif( !empty( $_REQUEST['find'] ) ) {
