@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.4 2006/12/30 23:23:45 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.5 2006/12/31 11:36:55 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.4 $
+ * @version  $Revision: 1.5 $
  * @package  pigeonholes
  */
 
@@ -76,10 +76,17 @@ class iLike extends BitBase {
 		}
 
 		if( !empty( $find ) && is_array( $find ) ) {
+			$findHash = $ignored = array();
 			// prepare find hash
 			foreach( $find as $key => $val ) {
-				$findHash[] = "%".strtoupper( $val )."%";
+				if( strlen( $val ) > 2 ) {
+					$findHash[] = "%".strtoupper( $val )."%";
+				} else {
+					$ignored[] = $val;
+				}
 			}
+			// return the list of ignored words
+			$pSearchHash['igonred'] = $ignored;
 
 			$columns = array( 'lc.`title`', 'lc.`data`' );
 			$whereSql .= empty( $whereSql ) ? ' WHERE( ' : ' AND( (';
