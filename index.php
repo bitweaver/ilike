@@ -10,9 +10,9 @@ $gLike = new iLike();
 $feedback = array();
 
 if( empty( $contentTypes ) ) {
-	$contentTypes = array( '' => 'All Content' );
+	$contentTypes = array( '' => tra( 'All Content' ) );
 	foreach( $gLibertySystem->mContentTypes as $cType ) {
-		$contentTypes[$cType['content_type_guid']] = $cType['content_description'];
+		$contentTypes[$cType['content_type_guid']] = tra( $cType['content_description'] );
 	}
 	$gBitSmarty->assign( 'contentTypes', $contentTypes );
 }
