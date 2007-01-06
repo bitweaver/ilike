@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.5 2006/12/31 11:36:55 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.6 2007/01/06 09:46:16 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.5 $
+ * @version  $Revision: 1.6 $
  * @package  pigeonholes
  */
 
@@ -107,7 +107,7 @@ class iLike extends BitBase {
 		}
 
 		if( !empty( $pListHash['sort_mode'] ) ) {
-			$orderSql = " ORDER BY ".$this->mDb->convert_sortmode( $pListHash['sort_mode'] )." ";
+			$orderSql = " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
 		}
 
 		// only continue if we haven't choked so far
