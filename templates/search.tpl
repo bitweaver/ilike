@@ -38,7 +38,7 @@
 		<ol>
 			{foreach from=$results item=result}
 				<li>
-					{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}&amp;highlight={$smarty.request.find|escape:url}">{$result.title|escape}</a> &bull; {displayname hash=$result} &bull; {$result.len|kbsize}<br />
+					{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}&amp;highlight={$smarty.request.find|escape:url}">{$result.title|escape}</a> &bull; {displayname hash=$result} &bull; {$result.len|display_bytes}<br />
 					<small>
 						{foreach from=$result.display_lines item=line key=number}
 							{$number}: &hellip;{$line|truncate:120:"..."}<br />
