@@ -7,20 +7,12 @@
 	<div class="body">
 		{form method="get" legend="Extended Search"}
 			<div class="row">
-				{formlabel label="Limit Search" for="content_type_guid"}
-				{forminput}
-				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="<br />"}
-					{formhelp note="Limit search to the selected Liberty package"}
-				{/forminput}
-			</div>
-
-			<div class="row">
 				{formlabel label="Find" for="find"}
 				{forminput}
 					<input name="highlight" size="50" id="find" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
 					<br />
 					<label><input type="radio" name="join" value="AND" {if !$smarty.request.join || $smarty.request.join == 'AND'}checked="checked"{/if}/> {tr}All words{/tr}</label>
-					<br />
+					&nbsp; &nbsp;
 					<label><input type="radio" name="join" value="OR" {if $smarty.request.join == 'OR'}checked="checked"{/if}/> {tr}Any word{/tr}</label>
 					{formhelp note='Use double quotes to search for phrases. e.g.: "apples and pears"'}
 				{/forminput}
@@ -29,28 +21,46 @@
 			<div class="row submit">
 				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
 			</div>
+
+			{if $smarty.request.find}
+				<hr />
+
+				<h2>{tr}Found '<span class="highlight">{$smarty.request.find|escape}</span>' in {$listInfo.total_records|default:0} record(s){/tr}</h2>
+
+				{formfeedback hash=$feedback}
+
+				<ol>
+					{foreach from=$results item=result}
+						<li>
+							{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}&amp;highlight={$smarty.request.find|escape:url}">{$result.title|escape}</a> &bull; {displayname hash=$result} &bull; <small>{$result.len|display_bytes}</small><br />
+							<small>
+								{foreach from=$result.display_lines item=line key=number}
+									{$number}: {$line|truncate:120:"..."}<br />
+								{/foreach}
+							</small>
+						</li>
+					{foreachelse}
+						<div class="norecords">{tr}No pages matched the search criteria{/tr}</div>
+					{/foreach}
+				</ol>
+
+				{pagination highlight=$smarty.request.highlight join=$smarty.request.join}
+
+				<hr />
+			{/if}
+
+			<div class="row">
+				{formlabel label="Limit Search" for="content_type_guid"}
+				{forminput}
+				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
+					{formhelp note="Limit search to the selected Liberty package"}
+				{/forminput}
+			</div>
+
+			<div class="row submit">
+				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
+			</div>
 		{/form}
-
-		{if $smarty.request.find}<h2>{tr}Found '<span class="highlight">{$smarty.request.find|escape}</span>' in {$listInfo.total_records|default:0} record(s){/tr}</h2>{/if}
-
-		{formfeedback hash=$feedback}
-
-		<ol>
-			{foreach from=$results item=result}
-				<li>
-					{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}&amp;highlight={$smarty.request.find|escape:url}">{$result.title|escape}</a> &bull; {displayname hash=$result} &bull; {$result.len|display_bytes}<br />
-					<small>
-						{foreach from=$result.display_lines item=line key=number}
-							{$number}: &hellip;{$line|truncate:120:"..."}<br />
-						{/foreach}
-					</small>
-				</li>
-			{foreachelse}
-				{if $smarty.request.find}<div class="norecords">{tr}No pages matched the search criteria{/tr}</div>{/if}
-			{/foreach}
-		</ol>
-
-		{pagination highlight=$smarty.request.highlight join=$smarty.request.join}
 	</div><!-- end .body -->
 </div><!-- end .ilike -->
 {/strip}

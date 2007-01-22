@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.6 2007/01/06 09:46:16 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.7 2007/01/22 19:03:27 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.6 $
+ * @version  $Revision: 1.7 $
  * @package  pigeonholes
  */
 
@@ -32,7 +32,7 @@ class iLike extends BitBase {
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
 	function search( &$pSearchHash ) {
-		global $gLibertySystem, $gBitSystem, $gBitUser;
+		global $gLibertySystem, $gBitSystem, $gBitUser, $gBitDbType;
 
 		LibertyContent::prepGetList( $pSearchHash );
 		$ret = $bindVars = array();
@@ -40,56 +40,63 @@ class iLike extends BitBase {
 		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 		// if all content has been selected, there is an empty value in the array
-		if( !empty( $pSearchHash['contentTypes'] ) && in_array( '', $pSearchHash['contentTypes'] ) ) {
+		if( !empty( $pSearchHash['contentTypes'] ) && in_array( '', $pSearchHash['contentTypes'] )) {
 			$pSearchHash['contentTypes'] = array();
 		}
 
+		// check if the user has the required permissions to view the requested content type
 		foreach( $gLibertySystem->mContentTypes as $contentType ) {
-			if( ( empty( $pSearchHash['contentTypes'] ) || in_array( $contentType["content_type_guid"], $pSearchHash['contentTypes'] ) )
-				&& $this->hasViewPermission( $contentType["content_type_guid"] ) ) {
+			if(( empty( $pSearchHash['contentTypes'] ) || in_array( $contentType["content_type_guid"], $pSearchHash['contentTypes'] )) && $this->hasViewPermission( $contentType["content_type_guid"] )) {
 				$allowed[] = $contentType["content_type_guid"];
 			}
 		}
 
-		if( !empty( $allowed ) ) {
+		if( !empty( $allowed )) {
 			$whereSql .= empty( $whereSql ) ? ' WHERE ' : ' AND ';
-			$whereSql .= " lc.`content_type_guid` IN( " . implode( ',', array_fill( 0, count( $allowed ), '?' ) )." ) ";
+			$whereSql .= " lc.`content_type_guid` IN( " . implode( ',', array_fill( 0, count( $allowed ), '?' ))." ) ";
 			$bindVars = array_merge( $bindVars, $allowed );
 		} else {
 			$this->mErrors['permission'] = tra( "You don't have the required permissions to search the requested content types." );
 		}
 
-		$find = array();
 		// prepare all the words to search for - allow the use of phrases by enclosing them with "..."
-		$pattern = '#"([^"]*)"#';
-		if( preg_match_all( $pattern, $pSearchHash['find'], $matches ) ) {
+		$find = array();
+		if( preg_match_all( '#"([^"]*)"#', $pSearchHash['find'], $matches )) {
 			$find = $matches[1];
 			// remove the sections we've just dealt with
 			$pSearchHash['find'] = preg_replace( $pattern, "", $pSearchHash['find'] );
 		}
 
-		$pSearchHash['find'] = preg_replace( "!\s+!", " ", $pSearchHash['find'] );
-		if( !empty( $pSearchHash['find'] ) || !empty( $find ) ) {
-			$find = array_merge( $find, explode( ' ', $pSearchHash['find'] ) );
+		// clean up the search words, remove surrounding spaces...
+		$pSearchHash['find'] = preg_replace( "!\s+!", " ", trim( $pSearchHash['find'] ));
+		if( !empty( $pSearchHash['find'] ) || !empty( $find )) {
+			$find = array_merge( $find, explode( ' ', $pSearchHash['find'] ));
 		} else {
 			$this->mErrors['search'] = tra( "We need a search term for this to work." );
 		}
 
-		if( !empty( $find ) && is_array( $find ) ) {
-			$findHash = $ignored = array();
-			// prepare find hash
-			foreach( $find as $key => $val ) {
-				if( strlen( $val ) > 2 ) {
-					$findHash[] = "%".strtoupper( $val )."%";
-				} else {
-					$ignored[] = $val;
-				}
+		$findHash = $ignored = array();
+		// prepare find hash
+		foreach( $find as $key => $val ) {
+			if( strlen( $val ) > 2 ) {
+				$findHash[] = "%".strtoupper( $val )."%";
+			} else {
+				$ignored[] = $val;
 			}
-			// return the list of ignored words
-			$pSearchHash['igonred'] = $ignored;
+		}
+		// return the list of ignored words
+		$pSearchHash['igonred'] = $ignored;
 
+		// here we create the SQL to check for the search words in a given set of columns
+		if( !empty( $findHash ) && is_array( $findHash )) {
+			// set the list of columns and the required JOINs
 			$columns = array( 'lc.`title`', 'lc.`data`' );
-			$whereSql .= empty( $whereSql ) ? ' WHERE( ' : ' AND( (';
+			if( $gBitSystem->isPackageActive( 'wiki' )) {
+				$columns[] = 'ilwp.`description`';
+				$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."wiki_pages` ilwp ON ( lc.`content_id` = ilwp.`content_id` ) ";
+			}
+
+			$whereSql .= empty( $whereSql ) ? ' WHERE( ' : ' AND((';
 			$j = 0;
 			foreach( $columns as $column ) {
 				$i = 0;
@@ -97,21 +104,27 @@ class iLike extends BitBase {
 				foreach( $findHash as $val ) {
 					$join = !empty( $pSearchHash['join'] ) ? $pSearchHash['join'] : 'AND';
 					$whereSql .= ( $i++ > 0 ) ? " $join " : '';
-					$whereSql .= " UPPER( $column ) LIKE ? ";
+					if( $gBitDbType == "postgres" ) {
+						$whereSql .= " $column ILIKE ? ";
+					} else {
+						$whereSql .= " UPPER( $column ) LIKE ? ";
+					}
 				}
-				$whereSql .= ( $j == 0 ) ? '' : ' ) ';
 				$j++;
+				$whereSql .= ( $j == count( $columns )) ? ' ) ' : '';
 				$bindVars = array_merge( $bindVars, $findHash );
 			}
 			$whereSql .= ") ";
+		} else {
+			$this->mErrors['search'] = tra( "The searchterm you entered was probably too short." );
 		}
 
-		if( !empty( $pListHash['sort_mode'] ) ) {
-			$orderSql = " ORDER BY ".$this->mDb->convertSortmode( $pListHash['sort_mode'] )." ";
+		if( !empty( $pSearchHash['sort_mode'] )) {
+			$orderSql = " ORDER BY ".$this->mDb->convertSortmode( $pSearchHash['sort_mode'] );
 		}
 
 		// only continue if we haven't choked so far
-		if( empty( $this->mErrors ) ) {
+		if( empty( $this->mErrors )) {
 			$query = "
 				SELECT lc.*, lct.`content_description`, lch.`hits`,
 				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
@@ -129,7 +142,7 @@ class iLike extends BitBase {
 				$aux['user'] = $aux['creator_user'];
 				$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
 				$aux['len'] = strlen( $aux['data'] );
-				$lines = explode( "\n", strip_tags( $aux['data'] ) );
+				$lines = explode( "\n", strip_tags( $aux['data'] ));
 				foreach( $findHash as $val ) {
 					$val = trim( $val, "%" );
 					$i = 0;
