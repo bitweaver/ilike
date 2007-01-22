@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="body">
-		{form method="get" legend="Extended Search"}
+		{form method="get"}
 			<div class="row">
 				{formlabel label="Find" for="find"}
 				{forminput}
