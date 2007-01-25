@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.7 2007/01/22 19:03:27 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.8 2007/01/25 11:45:23 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.7 $
+ * @version  $Revision: 1.8 $
  * @package  pigeonholes
  */
 
@@ -61,7 +61,8 @@ class iLike extends BitBase {
 
 		// prepare all the words to search for - allow the use of phrases by enclosing them with "..."
 		$find = array();
-		if( preg_match_all( '#"([^"]*)"#', $pSearchHash['find'], $matches )) {
+		$pattern = '#"([^"]*)"#';
+		if( preg_match_all( $pattern, $pSearchHash['find'], $matches )) {
 			$find = $matches[1];
 			// remove the sections we've just dealt with
 			$pSearchHash['find'] = preg_replace( $pattern, "", $pSearchHash['find'] );
@@ -151,6 +152,9 @@ class iLike extends BitBase {
 							$aux['display_lines'][$number + 1] = encode_email_addresses( $line );
 							$i++;
 						}
+					}
+					if( !empty( $aux['display_lines'] )) {
+						ksort( $aux['display_lines'] );
 					}
 				}
 				$ret[] = $aux;
