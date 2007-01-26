@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.8 2007/01/25 11:45:23 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.9 2007/01/26 12:56:28 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.8 $
+ * @version  $Revision: 1.9 $
  * @package  pigeonholes
  */
 
@@ -127,21 +127,15 @@ class iLike extends BitBase {
 		// only continue if we haven't choked so far
 		if( empty( $this->mErrors )) {
 			$query = "
-				SELECT lc.*, lct.`content_description`, lch.`hits`,
-				uue.`login` AS modifier_user, uue.`real_name` AS modifier_real_name,
-				uuc.`login` AS creator_user, uuc.`real_name` AS creator_real_name
+				SELECT lc.*, lct.`content_description`, lch.`hits`
 				$selectSql
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lc.`content_id` = lch.`content_id` )
 				$joinSql $whereSql $orderSql";
 			$result = $this->mDb->query( $query, $bindVars, $pSearchHash['max_records'], $pSearchHash['offset'] );
 
 			while( $aux = $result->fetchRow() ) {
-				$aux['user'] = $aux['creator_user'];
-				$aux['real_name'] = ( isset( $aux['creator_real_name'] ) ? $aux['creator_real_name'] : $aux['creator_user'] );
 				$aux['len'] = strlen( $aux['data'] );
 				$lines = explode( "\n", strip_tags( $aux['data'] ));
 				foreach( $findHash as $val ) {
