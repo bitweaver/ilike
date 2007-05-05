@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="body">
-		{form method="get"}
+		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
 			<div class="row">
 				{formlabel label="Find" for="find"}
 				{forminput}
@@ -22,6 +22,18 @@
 				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
 			</div>
 
+			<div class="row">
+				{formlabel label="Limit Search" for="content_type_guid"}
+				{forminput}
+				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
+					{formhelp note="Limit search to the selected Liberty package"}
+				{/forminput}
+			</div>
+
+			<div class="row submit">
+				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
+			</div>
+		{/form}
 			{if $smarty.request.find}
 				<hr />
 
@@ -49,18 +61,6 @@
 				<hr />
 			{/if}
 
-			<div class="row">
-				{formlabel label="Limit Search" for="content_type_guid"}
-				{forminput}
-				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
-					{formhelp note="Limit search to the selected Liberty package"}
-				{/forminput}
-			</div>
-
-			<div class="row submit">
-				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
-			</div>
-		{/form}
 	</div><!-- end .body -->
 </div><!-- end .ilike -->
 {/strip}
