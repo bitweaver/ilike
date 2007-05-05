@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.9 2007/01/26 12:56:28 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.10 2007/05/05 22:36:50 wjames5 Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.9 $
+ * @version  $Revision: 1.10 $
  * @package  pigeonholes
  */
 
@@ -136,6 +136,22 @@ class iLike extends BitBase {
 			$result = $this->mDb->query( $query, $bindVars, $pSearchHash['max_records'], $pSearchHash['offset'] );
 
 			while( $aux = $result->fetchRow() ) {
+				/*
+				$contentTypes = $gLibertySystem->mContentTypes;
+				if( !empty( $contentTypes[$aux['content_type_guid']] ) ) {
+					// quick alias for code readability
+					$type                       = &$contentTypes[$aux['content_type_guid']];			
+					
+					// create *one* object for each object *type* to  call virtual methods.
+					if( empty( $type['content_object'] ) ) {
+						include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
+						$type['content_object'] = new $type['handler_class']();
+					}
+					if( !empty( $gBitSystem->mPackages[$type['handler_package']] ) ) {
+						$aux['display_link'] = $type['content_object']->getDisplayLink( $aux['title'], $aux, '&amp;highlight=UAW' );
+					}
+				}
+				*/
 				$aux['len'] = strlen( $aux['data'] );
 				$lines = explode( "\n", strip_tags( $aux['data'] ));
 				foreach( $findHash as $val ) {

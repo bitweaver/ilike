@@ -44,7 +44,7 @@
 				<ol>
 					{foreach from=$results item=result}
 						<li>
-							{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}&amp;highlight={$smarty.request.find|escape:url}">{$result.title|escape}</a> <small>{$result.len|display_bytes}</small><br />
+							{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}{if $result.content_type_guid != 'bitcomment'}&amp;highlight={$smarty.request.find|escape:url}{/if}">{if $result.title}{$result.title|escape}{else}[ no title ]{/if}</a> <small>{$result.len|display_bytes}</small><br />
 							<small>
 								{foreach from=$result.display_lines item=line key=number}
 									{$number}: {$line|truncate:120:"..."}<br />
