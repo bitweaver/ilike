@@ -7,9 +7,9 @@
 	<div class="body">
 		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
 			<div class="row">
-				{formlabel label="Find" for="find"}
+				{formlabel label="Find" for="ilike"}
 				{forminput}
-					<input name="highlight" size="50" id="find" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
+					<input name="highlight" size="50" id="ilike" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
 					<br />
 					<label><input type="radio" name="join" value="AND" {if !$smarty.request.join || $smarty.request.join == 'AND'}checked="checked"{/if}/> {tr}All words{/tr}</label>
 					&nbsp; &nbsp;
