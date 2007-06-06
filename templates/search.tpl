@@ -25,7 +25,7 @@
 			<div class="row">
 				{formlabel label="Limit Search" for="content_type_guid"}
 				{forminput}
-				{html_checkboxes options=$iTypes name=iTypes selected=`$smarty.request.iTypes` separator="&nbsp; &nbsp; "}
+				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
 					{formhelp note="Limit search to the selected Liberty package"}
 				{/forminput}
 			</div>
@@ -53,7 +53,7 @@
 				{/foreach}
 			</ol>
 
-			{pagination highlight=$smarty.request.highlight join=$smarty.request.join iTypes=$smarty.request.iTypes}
+			{pagination highlight=$smarty.request.highlight join=$smarty.request.join contentTypes=$smarty.request.contentTypes}
 
 			<hr />
 		{/if}
