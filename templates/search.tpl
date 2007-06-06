@@ -25,42 +25,38 @@
 			<div class="row">
 				{formlabel label="Limit Search" for="content_type_guid"}
 				{forminput}
-				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
+				{html_checkboxes options=$iTypes name=iTypes selected=`$smarty.request.iTypes` separator="&nbsp; &nbsp; "}
 					{formhelp note="Limit search to the selected Liberty package"}
 				{/forminput}
 			</div>
-
-			<div class="row submit">
-				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
-			</div>
 		{/form}
-			{if $smarty.request.find}
-				<hr />
 
-				<h2>{tr}Found '<span class="highlight">{$smarty.request.find|escape}</span>' in {$listInfo.total_records|default:0} record(s){/tr}</h2>
+		{if $smarty.request.find}
+			<hr />
 
-				{formfeedback hash=$feedback}
+			<h2>{tr}Found '<span class="highlight">{$smarty.request.find|escape}</span>' in {$listInfo.total_records|default:0} record(s){/tr}</h2>
 
-				<ol>
-					{foreach from=$results item=result}
-						<li>
-							{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}{if $result.content_type_guid != 'bitcomment'}&amp;highlight={$smarty.request.find|escape:url}{/if}">{if $result.title}{$result.title|escape}{else}[ no title ]{/if}</a> <small>{$result.len|display_bytes}</small><br />
-							<small>
-								{foreach from=$result.display_lines item=line key=number}
-									{$number}: {$line|truncate:120:"..."}<br />
-								{/foreach}
-							</small>
-						</li>
-					{foreachelse}
-						<div class="norecords">{tr}No pages matched the search criteria{/tr}</div>
-					{/foreach}
-				</ol>
+			{formfeedback hash=$feedback}
 
-				{pagination highlight=$smarty.request.highlight join=$smarty.request.join}
+			<ol>
+				{foreach from=$results item=result}
+					<li>
+						{tr}{$result.content_description}{/tr}: <a href="{$smarty.const.BIT_ROOT_URL}index.php?content_id={$result.content_id}{if $result.content_type_guid != 'bitcomment'}&amp;highlight={$smarty.request.find|escape:url}{/if}">{if $result.title}{$result.title|escape}{else}[ no title ]{/if}</a> <small>{$result.len|display_bytes}</small><br />
+						<small>
+							{foreach from=$result.display_lines item=line key=number}
+								{$number}: {$line|truncate:120:"..."}<br />
+							{/foreach}
+						</small>
+					</li>
+				{foreachelse}
+					<div class="norecords">{tr}No pages matched the search criteria{/tr}</div>
+				{/foreach}
+			</ol>
 
-				<hr />
-			{/if}
+			{pagination highlight=$smarty.request.highlight join=$smarty.request.join iTypes=$smarty.request.iTypes}
 
+			<hr />
+		{/if}
 	</div><!-- end .body -->
 </div><!-- end .ilike -->
 {/strip}

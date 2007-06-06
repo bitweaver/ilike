@@ -9,17 +9,17 @@ $gBitSystem->verifyPermission( 'p_ilike_search' );
 $gLike = new iLike();
 $feedback = array();
 
-if( empty( $contentTypes ) ) {
-	$contentTypes = array( '' => tra( 'All Content' ) );
+if( empty( $iTypes ) ) {
+	$iTypes = array( '' => tra( 'All Content' ) );
 	foreach( $gLibertySystem->mContentTypes as $cType ) {
-		$contentTypes[$cType['content_type_guid']] = $cType['content_description'];
+		$iTypes[$cType['content_type_guid']] = $cType['content_description'];
 	}
 }
-$gBitSmarty->assign( 'contentTypes', $contentTypes );
+$gBitSmarty->assign( 'iTypes', $iTypes );
 
 // if we are searching with the search box, we are handed a single content type
 if( !empty( $_REQUEST['content_type_guid'] ) ) {
-	$_REQUEST['contentTypes'][] = $_REQUEST['content_type_guid'];
+	$_REQUEST['iTypes'][] = $_REQUEST['content_type_guid'];
 }
 
 $_REQUEST['find'] = !empty( $_REQUEST['highlight'] ) ? $_REQUEST['highlight'] : NULL;
