@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.11 2007/05/05 22:40:22 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.12 2007/07/26 08:30:10 bitweaver Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.11 $
+ * @version  $Revision: 1.12 $
  * @package  pigeonholes
  */
 
@@ -34,7 +34,7 @@ class iLike extends BitBase {
 	function search( &$pSearchHash ) {
 		global $gLibertySystem, $gBitSystem, $gBitUser, $gBitDbType;
 
-		LibertyContent::prepGetList( $pSearchHash );
+		BitBase::prepGetList( $pSearchHash );
 		$ret = $bindVars = array();
 		$selectSql = $whereSql = $orderSql = $joinSql = '';
 		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
@@ -163,7 +163,7 @@ class iLike extends BitBase {
 				$joinSql $whereSql";
 			$pSearchHash['cant'] = $this->mDb->getOne( $query, $bindVars );
 
-			LibertyContent::postGetList( $pSearchHash );
+			BitBase::postGetList( $pSearchHash );
 			return $ret;
 		} else {
 			return FALSE;
