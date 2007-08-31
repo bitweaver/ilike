@@ -9,7 +9,7 @@
 			</div>
 
 			<div class="row submit">
-				<input type="submit" name="search" value="{tr}Go{/tr}"/>
+				<input type="submit" name="search" value="{tr}Go{/tr}" />
 			</div>
 		{/form}
 	{/bitmodule}
