@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.13 2007/10/16 20:06:22 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.14 2007/10/16 20:10:21 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.13 $
+ * @version  $Revision: 1.14 $
  * @package  pigeonholes
  */
 
@@ -125,7 +125,7 @@ class iLike extends BitBase {
 		// only continue if we haven't choked so far
 		if( empty( $this->mErrors )) {
 			$query = "
-				SELECT lc.`data`, lc.`title`, lcds.`data` AS `summary`, lct.`content_description`, lch.`hits` $selectSql
+				SELECT lc.`data`, lc.`content_id`, lc.`title`, lcds.`data` AS `summary`, lct.`content_description`, lch.`hits` $selectSql
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lc.`content_id` = lcds.`content_id` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
