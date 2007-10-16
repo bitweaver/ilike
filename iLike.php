@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.12 2007/07/26 08:30:10 bitweaver Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.13 2007/10/16 20:06:22 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.12 $
+ * @version  $Revision: 1.13 $
  * @package  pigeonholes
  */
 
@@ -34,10 +34,10 @@ class iLike extends BitBase {
 	function search( &$pSearchHash ) {
 		global $gLibertySystem, $gBitSystem, $gBitUser, $gBitDbType;
 
+		// initiate stuff
 		BitBase::prepGetList( $pSearchHash );
 		$ret = $bindVars = array();
 		$selectSql = $whereSql = $orderSql = $joinSql = '';
-		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
 
 		// if all content has been selected, there is an empty value in the array
 		if( !empty( $pSearchHash['contentTypes'] ) && in_array( '', $pSearchHash['contentTypes'] )) {
@@ -91,12 +91,7 @@ class iLike extends BitBase {
 		// here we create the SQL to check for the search words in a given set of columns
 		if( !empty( $findHash ) && is_array( $findHash )) {
 			// set the list of columns and the required JOINs
-			$columns = array( 'lc.`title`', 'lc.`data`' );
-			if( $gBitSystem->isPackageActive( 'wiki' )) {
-				$columns[] = 'ilwp.`description`';
-				$joinSql .= " LEFT OUTER JOIN `".BIT_DB_PREFIX."wiki_pages` ilwp ON ( lc.`content_id` = ilwp.`content_id` ) ";
-			}
-
+			$columns = array( 'lc.`title`', 'lc.`data`', 'lcds.`data`' );
 			$whereSql .= empty( $whereSql ) ? ' WHERE( ' : ' AND((';
 			$j = 0;
 			foreach( $columns as $column ) {
@@ -120,6 +115,9 @@ class iLike extends BitBase {
 			$this->mErrors['search'] = tra( "The searchterm you entered was probably too short." );
 		}
 
+		// get service SQL
+		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+
 		if( !empty( $pSearchHash['sort_mode'] )) {
 			$orderSql = " ORDER BY ".$this->mDb->convertSortmode( $pSearchHash['sort_mode'] );
 		}
@@ -127,17 +125,18 @@ class iLike extends BitBase {
 		// only continue if we haven't choked so far
 		if( empty( $this->mErrors )) {
 			$query = "
-				SELECT lc.*, lct.`content_description`, lch.`hits`
-				$selectSql
+				SELECT lc.`data`, lc.`title`, lcds.`data` AS `summary`, lct.`content_description`, lch.`hits` $selectSql
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lc.`content_id` = lcds.`content_id` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lc.`content_id` = lch.`content_id` )
 				$joinSql $whereSql $orderSql";
 			$result = $this->mDb->query( $query, $bindVars, $pSearchHash['max_records'], $pSearchHash['offset'] );
 
 			while( $aux = $result->fetchRow() ) {
-				$aux['len'] = strlen( $aux['data'] );
-				$lines = explode( "\n", strip_tags( $aux['data'] ));
+				$data = $aux['summary']."\n".$aux['data'];
+				$aux['len'] = strlen( $data );
+				$lines = explode( "\n", strip_tags( $data ));
 				foreach( $findHash as $val ) {
 					$val = trim( $val, "%" );
 					$i = 0;
@@ -147,6 +146,7 @@ class iLike extends BitBase {
 							$i++;
 						}
 					}
+
 					if( !empty( $aux['display_lines'] )) {
 						ksort( $aux['display_lines'] );
 					}
@@ -155,10 +155,9 @@ class iLike extends BitBase {
 			}
 
 			$query = "
-				SELECT COUNT( lc.`content_id` ) $selectSql
+				SELECT COUNT( lc.`content_id` )
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uue ON ( uue.`user_id` = lc.`modifier_user_id` )
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uuc ON ( uuc.`user_id` = lc.`user_id` )
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lc.`content_id` = lcds.`content_id` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 				$joinSql $whereSql";
 			$pSearchHash['cant'] = $this->mDb->getOne( $query, $bindVars );
