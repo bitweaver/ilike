@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.14 2007/10/16 20:10:21 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.15 2007/10/23 13:25:40 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.14 $
+ * @version  $Revision: 1.15 $
  * @package  pigeonholes
  */
 
@@ -178,22 +178,25 @@ class iLike extends BitBase {
 	 * TODO: this is extremely crude and we need a method to get the view permissions from all packages automagically
 	 */
 	function hasViewPermission( $pContentType = "" ) {
-		global $gBitUser;
-		$ret = FALSE;
-		switch( $pContentType ) {
-			case "bitarticle"        : $perm = "p_articles_read";            break;
-			case "baords"            : $perm = "p_bitboards_read";           break;
-			case "pigeonholes"       : $perm = "p_pigeonholes_view";         break;
-			case "treasurygallery"   : $perm = "p_treasury_view_gallery";    break;
-			case "treasuryitem"      : $perm = "p_treasury_view_item";       break;
-			case "bituser"           : $perm = "p_users_view_user_homepage"; break;
-			case "bitpage"           : $perm = "p_wiki_view_page";           break;
-			case "bitblogpost"       : $perm = "p_blogs_view";               break;
-			case "bitcomment"        : $perm = "p_liberty_read_comments";    break;
-			case "fisheyegallery"    : $perm = "p_fisheye_view";             break;
-			default                  : $perm = "";                           break;
+		global $gBitUser, $gLibertySystem, $gBitSystem;
+		static $sPermObjects;
+
+		if( empty( $sPermObjects[$pContentType]['content_object'] )) {
+			$contentTypes = $gLibertySystem->mContentTypes;
+			if( !empty( $contentTypes[$pContentType] )) {
+				$type = &$contentTypes[$pContentType];
+				// create *one* object for each object *type* to  call virtual methods.
+				include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
+				$sPermObjects[$pContentType]['content_object'] = new $type['handler_class']();
+			}
 		}
-		return $gBitUser->hasPermission( $perm );
+
+		// check to see if the user has the required permissions to view this content type
+		if( !empty( $sPermObjects[$pContentType]['content_object'] )) {
+			return $sPermObjects[$pContentType]['content_object']->hasViewPermission();
+		} else {
+			return TRUE;
+		}
 	}
 }
 ?>
