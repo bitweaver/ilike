@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.15 2007/10/23 13:25:40 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.16 2008/06/11 06:12:12 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.15 $
+ * @version  $Revision: 1.16 $
  * @package  pigeonholes
  */
 
@@ -80,7 +80,7 @@ class iLike extends BitBase {
 		// prepare find hash
 		foreach( $find as $key => $val ) {
 			if( strlen( $val ) > 2 ) {
-				$findHash[] = "%".strtoupper( $val )."%";
+				$findHash[] = "%".strtoupper( str_replace( "%", "\%", $val ))."%";
 			} else {
 				$ignored[] = $val;
 			}
