@@ -1,12 +1,12 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.16 2008/06/11 06:12:12 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.17 2008/06/19 05:12:59 lsces Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.16 $
- * @package  pigeonholes
+ * @version  $Revision: 1.17 $
+ * @package  ilike
  */
 
 /**
