@@ -32,5 +32,5 @@ if( !empty( $_REQUEST['find'] ) && $results = $gLike->search( $searchHash ) ) {
 }
 
 $gBitSmarty->assign( "feedback", $feedback );
-$gBitSystem->display( 'bitpackage:ilike/search.tpl', tra( 'Search Results' ) );
+$gBitSystem->display( 'bitpackage:ilike/search.tpl', tra( 'Search Results' ) , array( 'display_mode' => 'display' ));
 ?>
