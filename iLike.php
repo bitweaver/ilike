@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.17 2008/06/19 05:12:59 lsces Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.18 2008/08/25 06:57:28 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.17 $
+ * @version  $Revision: 1.18 $
  * @package  ilike
  */
 
@@ -154,6 +154,9 @@ class iLike extends BitBase {
 				$ret[] = $aux;
 			}
 
+			// do some custom sorting
+			usort( $ret, 'ilike_relevance_sort' );
+
 			$query = "
 				SELECT COUNT( lc.`content_id` )
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
@@ -196,6 +199,26 @@ class iLike extends BitBase {
 			return $sPermObjects[$pContentType]['content_object']->hasViewPermission();
 		} else {
 			return TRUE;
+		}
+	}
+}
+
+/**
+ * ilike_relevance_sort usort callback function to increase relevance of result if search result is in title
+ * 
+ * @param array $pHash Hash of search results
+ * @access public
+ * @return -1 if result is in title, 1 otherwise
+ */
+function ilike_relevance_sort( $pHash ) {
+	if( !empty( $_REQUEST['find'] )) {
+		$find = explode( ' ', preg_replace( "!\s+!", " ", trim( $_REQUEST['find'] )));
+		if( is_array( $find )) {
+			foreach( $find as $word ) {
+				if( !preg_match( "#$word#i", $pHash['title'] )) {
+					return 1;
+				}
+			}
 		}
 	}
 }
