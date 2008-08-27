@@ -7,9 +7,9 @@
 	<div class="body">
 		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
 			<div class="row">
-				{formlabel label="Find" for="ilike"}
+				{formlabel label="Find" for="ilike-input"}
 				{forminput}
-					<input name="highlight" size="50" id="ilike" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
+					<input name="highlight" size="50" id="ilike-input" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
 					<br />
 					<label><input type="radio" name="join" value="AND" {if !$smarty.request.join || $smarty.request.join == 'AND'}checked="checked"{/if}/> {tr}All words{/tr}</label>
 					&nbsp; &nbsp;
@@ -23,7 +23,7 @@
 			</div>
 
 			<div class="row">
-				{formlabel label="Limit Search" for="content_type_guid"}
+				{formlabel label="Limit Search"}
 				{forminput}
 				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
 					{formhelp note="Limit search to the selected Liberty package"}
