@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.18 2008/08/25 06:57:28 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.19 2008/09/23 11:35:28 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.18 $
+ * @version  $Revision: 1.19 $
  * @package  ilike
  */
 
@@ -32,6 +32,8 @@ class iLike extends BitBase {
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
 	function search( &$pSearchHash ) {
+		// PHP compatability issues
+		include_once( UTIL_PKG_PATH.'PHP_Compat/Compat/Function/stripos.php' );
 		global $gLibertySystem, $gBitSystem, $gBitUser, $gBitDbType;
 
 		// initiate stuff
