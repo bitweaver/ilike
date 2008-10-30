@@ -1,7 +1,13 @@
 {strip}
 <div class="display ilike">
 	<div class="header">
-		<h1>{tr}Search {if $smarty.request.find}Results{else}Page{/if}{/tr}</h1>
+		<h1>
+			{if $smarty.request.find}
+				{tr}Search results{/tr}
+			{else}
+				{tr}Search{/tr}
+			{/if}
+		</h1>
 	</div>
 
 	<div class="body">
