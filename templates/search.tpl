@@ -32,7 +32,7 @@
 				{formlabel label="Limit Search"}
 				{forminput}
 				{html_checkboxes options=$contentTypes name=contentTypes selected=`$smarty.request.contentTypes` separator="&nbsp; &nbsp; "}
-					{formhelp note="Limit search to the selected Liberty package"}
+					{formhelp note="Limit search to the selected content types"}
 				{/forminput}
 			</div>
 		{/form}
