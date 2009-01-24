@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.19 2008/09/23 11:35:28 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.20 2009/01/24 21:22:46 tekimaki_admin Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.19 $
+ * @version  $Revision: 1.20 $
  * @package  ilike
  */
 
@@ -129,7 +129,7 @@ class iLike extends BitBase {
 			$query = "
 				SELECT lc.`data`, lc.`content_id`, lc.`title`, lcds.`data` AS `summary`, lct.`content_description`, lch.`hits` $selectSql
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lc.`content_id` = lcds.`content_id` )
+					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lc.`content_id` = lcds.`content_id` AND lcds.`data_type` = 'summary' )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lc.`content_id` = lch.`content_id` )
 				$joinSql $whereSql $orderSql";
