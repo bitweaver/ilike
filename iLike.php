@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.21 2009/02/05 17:44:58 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.22 2009/02/06 11:56:17 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.21 $
+ * @version  $Revision: 1.22 $
  * @package  ilike
  */
 
@@ -61,60 +61,9 @@ class iLike extends BitBase {
 			$this->mErrors['permission'] = tra( "You don't have the required permissions to search the requested content types." );
 		}
 
-		// prepare all the words to search for - allow the use of phrases by enclosing them with "..."
-		$find = array();
-		$pattern = '#"([^"]*)"#';
-		if( preg_match_all( $pattern, $pSearchHash['find'], $matches )) {
-			$find = $matches[1];
-			// remove the sections we've just dealt with
-			$pSearchHash['find'] = preg_replace( $pattern, "", $pSearchHash['find'] );
-		}
-
-		// clean up the search words, remove surrounding spaces...
-		$pSearchHash['find'] = preg_replace( "!\s+!", " ", trim( $pSearchHash['find'] ));
-		if( !empty( $pSearchHash['find'] ) || !empty( $find )) {
-			$find = array_merge( $find, explode( ' ', $pSearchHash['find'] ));
-		} else {
-			$this->mErrors['search'] = tra( "We need a search term for this to work." );
-		}
-
-		$findHash = $ignored = array();
-		// prepare find hash
-		foreach( $find as $key => $val ) {
-			if( strlen( $val ) > 2 ) {
-				$findHash[] = "%".strtoupper( str_replace( "%", "\%", $val ))."%";
-			} else {
-				$ignored[] = $val;
-			}
-		}
-		// return the list of ignored words
-		$pSearchHash['igonred'] = $ignored;
-
-		// here we create the SQL to check for the search words in a given set of columns
-		if( !empty( $findHash ) && is_array( $findHash )) {
-			// set the list of columns and the required JOINs
-			$columns = array( 'lc.`title`', 'lc.`data`', 'lcds.`data`' );
-			$whereSql .= empty( $whereSql ) ? ' WHERE( ' : ' AND((';
-			$j = 0;
-			foreach( $columns as $column ) {
-				$i = 0;
-				$whereSql .= ( $j == 0 ) ? '' : ')OR( ';
-				foreach( $findHash as $val ) {
-					$join = !empty( $pSearchHash['join'] ) ? $pSearchHash['join'] : 'AND';
-					$whereSql .= ( $i++ > 0 ) ? " $join " : '';
-					if( $gBitDbType == "postgres" ) {
-						$whereSql .= " $column ILIKE ? ";
-					} else {
-						$whereSql .= " UPPER( $column ) LIKE ? ";
-					}
-				}
-				$j++;
-				$whereSql .= ( $j == count( $columns )) ? ' ) ' : '';
-				$bindVars = array_merge( $bindVars, $findHash );
-			}
-			$whereSql .= ") ";
-		} else {
-			$this->mErrors['search'] = tra( "The searchterm you entered was probably too short." );
+		// create valid search SQL
+		if( $errors = $this->prepareSearchSql( $pSearchHash, $whereSql, $bindVars )) {
+			$this->mErrors = $errors;
 		}
 
 		// get service SQL
@@ -139,7 +88,7 @@ class iLike extends BitBase {
 				$data = $aux['summary']."\n".$aux['data'];
 				$aux['len'] = strlen( $data );
 				$lines = explode( "\n", strip_tags( $data ));
-				foreach( $findHash as $val ) {
+				foreach( $pSearchHash['findHash'] as $val ) {
 					$val = trim( $val, "%" );
 					$i = 0;
 					foreach( $lines as $number => $line ) {
@@ -203,6 +152,83 @@ class iLike extends BitBase {
 			return TRUE;
 		}
 	}
+
+	/**
+	 * prepareSearchSql 
+	 * 
+	 * @param array $pSearchHash 
+	 * @param boolean $pIsService 
+	 * @access public
+	 * @return boolean TRUE on success, FALSE on failure - $this->mErrors will contain reason for failure
+	 */
+	function prepareSearchSql( &$pSearchHash, &$pWhereSql, &$pBindVars, $pIsService = FALSE ) {
+		global $gBitDbType;
+		$errors = FALSE;
+
+		// prepare all the words to search for - allow the use of phrases by enclosing them with "..."
+		$find = array();
+		$pattern = '#"([^"]*)"#';
+		if( preg_match_all( $pattern, $pSearchHash['find'], $matches )) {
+			$find = $matches[1];
+			// remove the sections we've just dealt with
+			$pSearchHash['find'] = preg_replace( $pattern, "", $pSearchHash['find'] );
+		}
+
+		// clean up the search words, remove surrounding spaces...
+		$pSearchHash['find'] = preg_replace( "!\s+!", " ", trim( $pSearchHash['find'] ));
+		if( !empty( $pSearchHash['find'] ) || !empty( $find )) {
+			$find = array_merge( $find, explode( ' ', $pSearchHash['find'] ));
+		} else {
+			$errors['search'] = tra( "We need a search term for this to work." );
+		}
+
+		$pSearchHash['findHash'] = $ignored = array();
+		// prepare find hash
+		foreach( $find as $key => $val ) {
+			if( strlen( $val ) > 2 ) {
+				$pSearchHash['findHash'][] = "%".strtoupper( str_replace( "%", "\%", $val ))."%";
+			} else {
+				$ignored[] = $val;
+			}
+		}
+		// return the list of ignored words
+		$pSearchHash['igonred'] = $ignored;
+
+		// here we create the SQL to check for the search words in a given set of columns
+		if( !empty( $pSearchHash['findHash'] ) && is_array( $pSearchHash['findHash'] )) {
+			// set the list of columns and the required JOINs
+			if( $pIsService ) {
+				$columns = array( 'lc.`title`', 'lc.`data`', 'ilikelcds.`data`' );
+				$pWhereSql .= ' AND((';
+			} else {
+				$columns = array( 'lc.`title`', 'lc.`data`', 'lcds.`data`' );
+				$pWhereSql .= empty( $pWhereSql ) ? ' WHERE( ' : ' AND((';
+			}
+
+			$j = 0;
+			foreach( $columns as $column ) {
+				$i = 0;
+				$pWhereSql .= ( $j == 0 ) ? '' : ')OR( ';
+				foreach( $pSearchHash['findHash'] as $val ) {
+					$join = !empty( $pSearchHash['join'] ) ? $pSearchHash['join'] : 'AND';
+					$pWhereSql .= ( $i++ > 0 ) ? " $join " : '';
+					if( $gBitDbType == "postgres" ) {
+						$pWhereSql .= " $column ILIKE ? ";
+					} else {
+						$pWhereSql .= " UPPER( $column ) LIKE ? ";
+					}
+				}
+				$j++;
+				$pWhereSql .= ( $j == count( $columns )) ? ' ) ' : '';
+				$pBindVars = array_merge( $pBindVars, $pSearchHash['findHash'] );
+			}
+			$pWhereSql .= ") ";
+		} else {
+			$errors['search'] = tra( "The searchterm you entered was probably too short." );
+		}
+
+		return $errors;
+	}
 }
 
 /**
@@ -229,79 +255,25 @@ function ilike_content_list_sql( &$pObject, &$pParamHash=NULL ) {
 	global $gBitSystem, $gBitDbType;
 	$ret = array();
 
-	if (isset($pParamHash['highlight']) && !empty($pParamHash['highlight'])){
+	if( !empty( $pParamHash['highlight'] )) {
 
 		$pSearchHash = $pParamHash;
 		$pSearchHash['find'] = $pSearchHash['highlight'];
 		$selectSql = $whereSql = $orderSql = $joinSql = '';
 		$bindVars = array();
 
-		// @TODO much of the prep work here is the exact same as in seach() - perhaps consolidate them in static functions of the class
-		// prepare all the words to search for - allow the use of phrases by enclosing them with "..."
-		$find = array();
-		$pattern = '#"([^"]*)"#';
-		if( preg_match_all( $pattern, $pSearchHash['find'], $matches )) {
-			$find = $matches[1];
-			// remove the sections we've just dealt with
-			$pSearchHash['find'] = preg_replace( $pattern, "", $pSearchHash['find'] );
-		}
+		// create valid search SQL
+		iLike::prepareSearchSql( $pSearchHash, $whereSql, $bindVars, TRUE );
 
-		// clean up the search words, remove surrounding spaces...
-		$pSearchHash['find'] = preg_replace( "!\s+!", " ", trim( $pSearchHash['find'] ));
-		if( !empty( $pSearchHash['find'] ) || !empty( $find )) {
-			$find = array_merge( $find, explode( ' ', $pSearchHash['find'] ));
-		} else {
-			$this->mErrors['search'] = tra( "We need a search term for this to work." );
-		}
-
-		$findHash = $ignored = array();
-		// prepare find hash
-		foreach( $find as $key => $val ) {
-			if( strlen( $val ) > 2 ) {
-				$findHash[] = "%".strtoupper( str_replace( "%", "\%", $val ))."%";
-			} else {
-				$ignored[] = $val;
-			}
-		}
-		// return the list of ignored words
-		$pSearchHash['igonred'] = $ignored;
-
-		// here we create the SQL to check for the search words in a given set of columns
-		if( !empty( $findHash ) && is_array( $findHash )) {
-			// set the list of columns and the required JOINs
-			$columns = array( 'lc.`title`', 'lc.`data`', 'ilikelcds.`data`' );
-			$whereSql .= ' AND((';
-			$j = 0;
-			foreach( $columns as $column ) {
-				$i = 0;
-				$whereSql .= ( $j == 0 ) ? '' : ')OR( ';
-				foreach( $findHash as $val ) {
-					$join = !empty( $pSearchHash['join'] ) ? $pSearchHash['join'] : 'AND';
-					$whereSql .= ( $i++ > 0 ) ? " $join " : '';
-					if( $gBitDbType == "postgres" ) {
-						$whereSql .= " $column ILIKE ? ";
-					} else {
-						$whereSql .= " UPPER( $column ) LIKE ? ";
-					}
-				}
-				$j++;
-				$whereSql .= ( $j == count( $columns )) ? ' ) ' : '';
-				$bindVars = array_merge( $bindVars, $findHash );
-			}
-			$whereSql .= ") ";
-		}
-
-		$ret['join_sql'] = " 
-			LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` ilikelcds ON ( lc.`content_id` = ilikelcds.`content_id` AND ilikelcds.`data_type` = 'summary' ) ";
-
+		$ret['join_sql'] = " LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` ilikelcds ON ( lc.`content_id` = ilikelcds.`content_id` AND ilikelcds.`data_type` = 'summary' ) ";
 		$ret['where_sql'] = $whereSql;
-
 		$ret['bind_vars'] = $bindVars;
 
 		if( !empty( $pParamHash['highlight'] ) ){
 			$pParamHash['listInfo']['highlight'] = $pParamHash['highlight'];
 			$pParamHash['listInfo']['ihash']['highlight'] = $pParamHash['highlight'];
 		}
+
 		if( !empty( $pParamHash['join'] ) ){
 			$pParamHash['listInfo']['join'] = $pParamHash['join'];
 			$pParamHash['listInfo']['ihash']['join'] = $pParamHash['join'];

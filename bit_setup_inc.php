@@ -22,8 +22,8 @@ if( $gBitSystem->isPackageActive( 'ilike' )) {
 	$gBitSystem->registerAppMenu( $menuHash );
 
 	$gLibertySystem->registerService( LIBERTY_SERVICE_ILIKE, ILIKE_PKG_NAME, array(
-			'content_list_sql_function' => 'ilike_content_list_sql',
-			'content_search_tpl'		=> 'bitpackage:ilike/search_inc.tpl'
+		'content_list_sql_function' => 'ilike_content_list_sql',
+		'content_search_tpl'		=> 'bitpackage:ilike/search_inc.tpl'
 	) );
 }
 ?>
