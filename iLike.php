@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.22 2009/02/06 11:56:17 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.23 2009/02/06 11:57:04 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.22 $
+ * @version  $Revision: 1.23 $
  * @package  ilike
  */
 
@@ -251,6 +251,14 @@ function ilike_relevance_sort( $pHash ) {
 	}
 }
 
+/**
+ * ilike_content_list_sql 
+ * 
+ * @param array $pObject 
+ * @param array $pParamHash 
+ * @access public
+ * @return boolean TRUE on success, FALSE on failure - $this->mErrors will contain reason for failure
+ */
 function ilike_content_list_sql( &$pObject, &$pParamHash=NULL ) {
 	global $gBitSystem, $gBitDbType;
 	$ret = array();
