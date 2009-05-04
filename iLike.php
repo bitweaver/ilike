@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.23 2009/02/06 11:57:04 squareing Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.24 2009/05/04 15:33:36 tekimaki_admin Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.23 $
+ * @version  $Revision: 1.24 $
  * @package  ilike
  */
 
@@ -53,6 +53,10 @@ class iLike extends BitBase {
 			}
 		}
 
+		if( in_array( 'bitcomment', $allowed ) ){
+			$pSearchHash['include_comments'] = TRUE;
+		}
+
 		if( !empty( $allowed )) {
 			$whereSql .= empty( $whereSql ) ? ' WHERE ' : ' AND ';
 			$whereSql .= " lc.`content_type_guid` IN( " . implode( ',', array_fill( 0, count( $allowed ), '?' ))." ) ";
@@ -67,10 +71,10 @@ class iLike extends BitBase {
 		}
 
 		// get service SQL
-		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars );
+		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, NULL, $pSearchHash );
 
 		if( !empty( $pSearchHash['sort_mode'] )) {
-			$orderSql = " ORDER BY ".$this->mDb->convertSortmode( $pSearchHash['sort_mode'] );
+			$orderSql = " ORDER BY lc.".$this->mDb->convertSortmode( $pSearchHash['sort_mode'] );
 		}
 
 		// only continue if we haven't choked so far
@@ -82,6 +86,7 @@ class iLike extends BitBase {
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lc.`content_id` = lch.`content_id` )
 				$joinSql $whereSql $orderSql";
+
 			$result = $this->mDb->query( $query, $bindVars, $pSearchHash['max_records'], $pSearchHash['offset'] );
 
 			while( $aux = $result->fetchRow() ) {
