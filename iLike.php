@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.24 2009/05/04 15:33:36 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.25 2009/05/20 19:16:18 tekimaki_admin Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.24 $
+ * @version  $Revision: 1.25 $
  * @package  ilike
  */
 
@@ -80,8 +80,25 @@ class iLike extends BitBase {
 		// only continue if we haven't choked so far
 		if( empty( $this->mErrors )) {
 			$query = "
-				SELECT lc.`data`, lc.`content_id`, lc.`title`, lcds.`data` AS `summary`, lct.`content_description`, lch.`hits` $selectSql
+				SELECT 
+				uue.`login` AS `modifier_user`,
+				uue.`real_name` AS `modifier_real_name`,
+				uue.`user_id` AS `modifier_user_id`,
+				uuc.`login` AS `creator_user`,
+				uuc.`real_name` AS `creator_real_name`,
+				uuc.`user_id` AS `creator_user_id`,
+				lc.`data`, 
+				lc.`content_id`, 
+				lc.`title`, 
+				lcds.`data` AS `summary`, 
+				lct.`content_description`, lch.`hits`,  
+				lc.`last_modified`,
+				lc.`created`,
+				lc.`content_type_guid`
+				$selectSql
 				FROM `".BIT_DB_PREFIX."liberty_content` lc
+					INNER JOIN `".BIT_DB_PREFIX."users_users` uuc ON (lc.`user_id`=uuc.`user_id`)
+					INNER JOIN `".BIT_DB_PREFIX."users_users` uue ON (lc.`modifier_user_id`=uue.`user_id`)
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_data` lcds ON ( lc.`content_id` = lcds.`content_id` AND lcds.`data_type` = 'summary' )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_types` lct ON ( lc.`content_type_guid` = lct.`content_type_guid` )
 					LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content_hits` lch ON ( lc.`content_id` = lch.`content_id` )
