@@ -26,10 +26,14 @@ $_REQUEST['find'] = !empty( $_REQUEST['highlight'] ) ? $_REQUEST['highlight'] : 
 $searchHash = $_REQUEST;
 if( !empty( $_REQUEST['find'] ) && $results = $gLike->search( $searchHash ) ) {
 	$gBitSmarty->assign( "results", $results );
-	$gBitSmarty->assign( "listInfo", $searchHash['listInfo'] );
 } elseif( !empty( $_REQUEST['find'] ) ) {
 	$feedback['error'] = $gLike->mErrors;
 }
+// assign that all form fields are repopulated regardless of whether we have results or not
+if( !empty( $searchHash['listInfo'] ) ){
+	$gBitSmarty->assign( "listInfo", $searchHash['listInfo'] );
+}
+
 
 $gBitSmarty->assign( "feedback", $feedback );
 $gBitSystem->display( 'bitpackage:ilike/search.tpl', tra( 'Search Results' ) , array( 'display_mode' => 'display' ));
