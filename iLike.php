@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.26 2009/05/21 22:00:23 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.27 2009/05/21 22:08:16 tekimaki_admin Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.26 $
+ * @version  $Revision: 1.27 $
  * @package  ilike
  */
 
@@ -124,6 +124,7 @@ class iLike extends BitBase {
 						ksort( $aux['display_lines'] );
 					}
 				}
+				$aux['display_url'] = BIT_ROOT_URL."index.php?content_id=".$aux['content_id'];
 				$ret[] = $aux;
 			}
 
