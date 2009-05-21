@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.25 2009/05/20 19:16:18 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.26 2009/05/21 22:00:23 tekimaki_admin Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.25 $
+ * @version  $Revision: 1.26 $
  * @package  ilike
  */
 
@@ -42,13 +42,13 @@ class iLike extends BitBase {
 		$selectSql = $whereSql = $orderSql = $joinSql = '';
 
 		// if all content has been selected, there is an empty value in the array
-		if( !empty( $pSearchHash['contentTypes'] ) && in_array( '', $pSearchHash['contentTypes'] )) {
-			$pSearchHash['contentTypes'] = array();
+		if( !empty( $pSearchHash['content_type_guid'] ) && in_array( '', $pSearchHash['content_type_guid'] )) {
+			$pSearchHash['content_type_guid'] = array();
 		}
 
 		// check if the user has the required permissions to view the requested content type
 		foreach( $gLibertySystem->mContentTypes as $contentType ) {
-			if(( empty( $pSearchHash['contentTypes'] ) || in_array( $contentType["content_type_guid"], $pSearchHash['contentTypes'] )) && $this->hasViewPermission( $contentType["content_type_guid"] )) {
+			if(( empty( $pSearchHash['content_type_guid'] ) || in_array( $contentType["content_type_guid"], $pSearchHash['content_type_guid'] )) && $this->hasViewPermission( $contentType["content_type_guid"] )) {
 				$allowed[] = $contentType["content_type_guid"];
 			}
 		}

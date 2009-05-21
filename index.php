@@ -17,9 +17,10 @@ if( empty( $contentTypes ) ) {
 }
 $gBitSmarty->assign( 'contentTypes', $contentTypes );
 
-// if we are searching with the search box, we are handed a single content type
-if( !empty( $_REQUEST['content_type_guid'] ) ) {
-	$_REQUEST['contentTypes'][] = $_REQUEST['content_type_guid'];
+// this is for backward compat with old param contentTypes incase of old bookmarks to search
+if( !empty( $_REQUEST['contentTypes'] ) && empty( $_REQUEST['content_type_guid'] ) ){
+	$_REQUEST['content_type_guid'] = $_REQUEST['contentTypes'];
+	unset($_REQUEST['contentTypes']);
 }
 
 $_REQUEST['find'] = !empty( $_REQUEST['highlight'] ) ? $_REQUEST['highlight'] : NULL;
@@ -29,7 +30,18 @@ if( !empty( $_REQUEST['find'] ) && $results = $gLike->search( $searchHash ) ) {
 } elseif( !empty( $_REQUEST['find'] ) ) {
 	$feedback['error'] = $gLike->mErrors;
 }
-// assign that all form fields are repopulated regardless of whether we have results or not
+
+// adding contenttype to listInfo is a little complex - this replicates code in liberty::get_content_list_inc.php
+if( !empty( $_REQUEST['content_type_guid'] )) {
+	if( !is_array( $_REQUEST['content_type_guid'] )) {
+		$guids = explode( ",", $_REQUEST['content_type_guid'] );
+	} else {
+		$guids = $_REQUEST['content_type_guid'];
+	}
+	$searchHash['listInfo']['ihash']['content_type_guid'] = $guids;
+}
+
+// assign so that all form fields are repopulated regardless of whether we have results or not - search services are dependent on this
 if( !empty( $searchHash['listInfo'] ) ){
 	$gBitSmarty->assign( "listInfo", $searchHash['listInfo'] );
 }
