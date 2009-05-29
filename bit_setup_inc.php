@@ -10,7 +10,7 @@ $registerHash = array(
 );
 $gBitSystem->registerPackage( $registerHash );
 
-if( $gBitSystem->isPackageActive( 'ilike' )) {
+if( $gBitSystem->isPackageActive( 'ilike' ) && $gBitUser->hasPermission( 'p_ilike_search' ) ) {
 
 	require_once( ILIKE_PKG_PATH.'iLike.php' );
 
