@@ -8,4 +8,8 @@ $gBitInstaller->registerPackageInfo( ILIKE_PKG_NAME, array(
 $gBitInstaller->registerUserPermissions( ILIKE_PKG_NAME, array(
 	array( 'p_ilike_search', 'Can search your site using the search engine', 'basic', ILIKE_PKG_NAME),
 ) );
-?>
+
+// Requirements
+$gBitInstaller->registerRequirements( ILIKE_PKG_NAME, array(
+    'liberty' => array( 'min' => '2.1.4' ),
+));

@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.27 2009/05/21 22:08:16 tekimaki_admin Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.28 2010/04/17 22:46:08 wjames5 Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.27 $
+ * @version  $Revision: 1.28 $
  * @package  ilike
  */
 
@@ -91,7 +91,9 @@ class iLike extends BitBase {
 				lc.`content_id`, 
 				lc.`title`, 
 				lcds.`data` AS `summary`, 
-				lct.`content_description`, lch.`hits`,  
+				lct.`content_name`, 
+				lct.`content_name_plural`, 
+				lch.`hits`,  
 				lc.`last_modified`,
 				lc.`created`,
 				lc.`content_type_guid`
