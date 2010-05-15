@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.28 2010/04/17 22:46:08 wjames5 Exp $
+ * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.29 2010/05/15 15:44:48 squareing Exp $
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.28 $
+ * @version  $Revision: 1.29 $
  * @package  ilike
  */
 
@@ -42,6 +42,10 @@ class iLike extends BitBase {
 		$selectSql = $whereSql = $orderSql = $joinSql = '';
 
 		// if all content has been selected, there is an empty value in the array
+		if( !is_array( $pSearchHash['content_type_guid'] )) {
+			$pSearchHash['content_type_guid'] = array( $pSearchHash['content_type_guid'] );
+		}
+
 		if( !empty( $pSearchHash['content_type_guid'] ) && in_array( '', $pSearchHash['content_type_guid'] )) {
 			$pSearchHash['content_type_guid'] = array();
 		}
