@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/modules/mod_search.php,v 1.6 2010/04/17 15:36:07 wjames5 Exp $
+ * @version $Header$
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.6 $
+ * @version  $Revision$
  * @package  ilike
  * @subpackage modules
  */

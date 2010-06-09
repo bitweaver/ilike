@@ -1,11 +1,11 @@
 <?php
 /**
- * @version $Header: /cvsroot/bitweaver/_bit_ilike/iLike.php,v 1.29 2010/05/15 15:44:48 squareing Exp $
+ * @version $Header$
  *
  * iLike class
  *
  * @author   xing <xing@synapse.plus.com>
- * @version  $Revision: 1.29 $
+ * @version  $Revision$
  * @package  ilike
  */
 
