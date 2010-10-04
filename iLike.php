@@ -42,7 +42,7 @@ class iLike extends BitBase {
 		$selectSql = $whereSql = $orderSql = $joinSql = '';
 
 		// if all content has been selected, there is an empty value in the array
-		if( !is_array( $pSearchHash['content_type_guid'] )) {
+		if( isset($pSearchHash['content_type_guid']) && !is_array( $pSearchHash['content_type_guid'] )) {
 			$pSearchHash['content_type_guid'] = array( $pSearchHash['content_type_guid'] );
 		}
 
