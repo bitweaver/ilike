@@ -21,7 +21,7 @@ class iLike extends BitBase {
 	* @access public
 	**/
 	function iLike() {
-		BitBase::BitBase();
+		parent::__construct();
 	}
 
 	/**
