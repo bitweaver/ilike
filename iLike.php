@@ -16,15 +16,6 @@
 class iLike extends BitBase {
 
 	/**
-	* initiate class
-	* @return none
-	* @access public
-	**/
-	function iLike() {
-		parent::__construct();
-	}
-
-	/**
 	 * search 
 	 * 
 	 * @param array $pSearchHash basically the same parameters as a regular list
