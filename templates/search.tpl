@@ -12,7 +12,7 @@
 
 	<div class="body">
 		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="Find" for="ilike-input"}
 				{forminput}
 					<input name="highlight" size="50" id="ilike-input" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
@@ -24,11 +24,11 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="control-group submit">
 				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
 			</div>
 
-			<div class="row">
+			<div class="control-group">
 				{formlabel label="Limit Search"}
 				{forminput}
 				{html_checkboxes options=$contentTypes name=content_type_guid selected=`$smarty.request.content_type_guid` separator="&nbsp; &nbsp; "}
