@@ -25,7 +25,7 @@
 			</div>
 
 			<div class="control-group submit">
-				<input type="submit" class="wikiaction" name="search" value="{tr}go{/tr}"/>
+				<input type="submit" class="btn" class="wikiaction" name="search" value="{tr}go{/tr}"/>
 			</div>
 
 			<div class="control-group">
