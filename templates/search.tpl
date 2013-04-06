@@ -31,7 +31,7 @@
 			<div class="control-group">
 				{formlabel label="Limit Search"}
 				{forminput}
-				{html_checkboxes options=$contentTypes name=content_type_guid selected=`$smarty.request.content_type_guid` separator="&nbsp; &nbsp; "}
+				{html_checkboxes options=$contentTypes name=content_type_guid selected=$smarty.request.content_type_guid separator="&nbsp; &nbsp; "}
 					{formhelp note="Limit search to the selected content types"}
 				{/forminput}
 			</div>
