@@ -10,7 +10,8 @@
 		</h1>
 	</div>
 
-	<div class="body">
+	<div class="row body">
+		<div class="span3">
 		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
 			<div class="control-group">
 				{formlabel label="Find" for="ilike-input"}
@@ -25,7 +26,7 @@
 			</div>
 
 			<div class="control-group submit">
-				<input type="submit" class="btn" class="wikiaction" name="search" value="{tr}go{/tr}"/>
+				<input type="submit" class="btn btn-primary" name="search" value="{tr}Search{/tr}"/>
 			</div>
 
 			<div class="control-group">
@@ -36,6 +37,9 @@
 				{/forminput}
 			</div>
 		{/form}
+	</div>
+	<div class="span9">
+
 
 		{if $smarty.request.find}
 			<hr />
