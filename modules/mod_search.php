@@ -18,5 +18,5 @@ if( empty( $contentTypes ) ) {
 }
 asort( $contentTypes );
 $contentTypes = array_merge( array( '' => tra( 'All Content' )), $contentTypes );
-$gBitSmarty->assign( 'contentTypes', $contentTypes );
+$_template->tpl_vars['contentTypes'] = new Smarty_variable( $contentTypes );
 ?>
