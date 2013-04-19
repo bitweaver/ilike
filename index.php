@@ -10,20 +10,16 @@ $gLike = new iLike();
 $feedback = array();
 
 if( empty( $contentTypes ) ) {
-	$contentTypes = array( '' => tra( 'All Content' ) );
 	foreach( $gLibertySystem->mContentTypes as $cType ) {
 		$contentTypes[$cType['content_type_guid']] = $gLibertySystem->getContentTypeName( $cType['content_type_guid'] );
 	}
 }
 $gBitSmarty->assign( 'contentTypes', $contentTypes );
 
-// this is for backward compat with old param contentTypes incase of old bookmarks to search
-if( !empty( $_REQUEST['contentTypes'] ) && empty( $_REQUEST['content_type_guid'] ) ){
-	$_REQUEST['content_type_guid'] = $_REQUEST['contentTypes'];
-	unset($_REQUEST['contentTypes']);
-}
-
 $_REQUEST['find'] = !empty( $_REQUEST['highlight'] ) ? $_REQUEST['highlight'] : NULL;
+if( empty( $_REQUEST['content_limit'] ) && !empty( $_REQUEST['content_type_guid'] )) {
+	unset( $_REQUEST['content_type_guid'] );
+}
 $searchHash = $_REQUEST;
 if( !empty( $_REQUEST['find'] ) && $results = $gLike->search( $searchHash ) ) {
 	$gBitSmarty->assign( "results", $results );
@@ -32,7 +28,8 @@ if( !empty( $_REQUEST['find'] ) && $results = $gLike->search( $searchHash ) ) {
 }
 
 // adding contenttype to listInfo is a little complex - this replicates code in liberty::get_content_list_inc.php
-if( !empty( $_REQUEST['content_type_guid'] )) {
+
+if( !empty( $_REQUEST['content_limit'] ) && !empty( $_REQUEST['content_type_guid'] )) {
 	if( !is_array( $_REQUEST['content_type_guid'] )) {
 		$guids = explode( ",", $_REQUEST['content_type_guid'] );
 	} else {
