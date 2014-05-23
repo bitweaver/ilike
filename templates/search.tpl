@@ -4,9 +4,9 @@
 		<h1>{if $smarty.request.find}{tr}Search results{/tr}{else}{tr}Search{/tr}{/if}</h1>
 	</header>
 
-	<div class="row-fluid">
+	<div class="row">
 		{if $smarty.request.find}
-		<div class="span9 pull-left">
+		<div class="col-md-9 pull-left">
 			<h2>{tr}Found '<span class="highlight">{$smarty.request.find|escape}</span>' in {$listInfo.total_records|default:0} record(s){/tr}</h2>
 
 			{formfeedback hash=$feedback}
@@ -29,7 +29,7 @@
 			{pagination highlight=$smarty.request.highlight join=$smarty.request.join}
 		</div>
 		{/if}
-		<div class="span3 pull-left">
+		<div class="col-md-3 pull-left">
 		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
 			<div class="control-group">
 				{formlabel label="Find" for="ilike-input"}
