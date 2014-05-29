@@ -160,8 +160,10 @@ class iLike extends BitBase {
 			if( !empty( $contentTypes[$pContentType] )) {
 				$type = &$contentTypes[$pContentType];
 				// create *one* object for each object *type* to  call virtual methods.
-				include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
-				$sPermObjects[$pContentType]['content_object'] = new $type['handler_class']();
+				if( $gBitSystem->isPackageActive( $type['handler_package'] ) ) {
+					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
+					$sPermObjects[$pContentType]['content_object'] = new $type['handler_class']();
+				}
 			}
 		}
 
