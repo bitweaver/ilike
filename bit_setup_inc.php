@@ -18,6 +18,7 @@ if( $gBitSystem->isPackageActive( 'ilike' ) && $gBitUser->hasPermission( 'p_ilik
 		'package_name'  => ILIKE_PKG_NAME,
 		'index_url'     => ILIKE_PKG_URL.'index.php',
 		'menu_template' => 'bitpackage:ilike/menu_ilike.tpl',
+		'menu_type' => 'form',
 	);
 	$gBitSystem->registerAppMenu( $menuHash );
 
