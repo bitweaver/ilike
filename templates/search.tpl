@@ -31,7 +31,7 @@
 		{/if}
 		<div class="col-md-3 pull-left">
 		{form method="get" action=$smarty.const.ILIKE_PKG_URL}
-			<div class="control-group">
+			<div class="form-group">
 				{formlabel label="Find" for="ilike-input"}
 				{forminput}
 					<input name="highlight" size="50" id="ilike-input" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
@@ -41,14 +41,14 @@
 				{/forminput}
 			</div>
 
-			<div class="control-group">
+			<div class="form-group">
 				<label class="checkbox"><input name="content_limit" type="checkbox" {if !empty($smarty.request.content_type_guid)}checked="checked"{/if} onclick="$('#contentlimit').toggle();">{tr}Limit search to types{/tr}</label>
 				<div class="well" id="contentlimit" {if empty($smarty.request.content_type_guid)}style="display:none;"{/if}>
 					{html_checkboxes options=$contentTypes name=content_type_guid selected=$smarty.request.content_type_guid}
 				</div>
 			</div>
 
-			<div class="control-group submit">
+			<div class="form-group submit">
 				<input type="submit" class="btn btn-primary" name="search" value="{tr}Search{/tr}"/>
 			</div>
 

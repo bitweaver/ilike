@@ -1,5 +1,5 @@
 {strip}
-<div class="control-group">
+<div class="form-group">
 	{formlabel label="Find:" for="ilike-input"}
 	{forminput}
 		{* use highlight not find to avoid tripping find restrictions in getlist processes *}
