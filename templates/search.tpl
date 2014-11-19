@@ -36,16 +36,18 @@
 				{forminput}
 					<input name="highlight" size="50" id="ilike-input" type="text" accesskey="s" value="{$smarty.request.find|escape}"/>
 					{formhelp note='Use double quotes to search for phrases. e.g.: "apple computer"'}
-					<label class="radio"><input type="radio" name="join" value="AND" {if !$smarty.request.join || $smarty.request.join == 'AND'}checked="checked"{/if}/> {tr}All words{/tr}</label>
-					<label class="radio"><input type="radio" name="join" value="OR" {if $smarty.request.join == 'OR'}checked="checked"{/if}/> {tr}Any word{/tr}</label>
+					<label class="radio-inline"><input type="radio" name="join" value="AND" {if !$smarty.request.join || $smarty.request.join == 'AND'}checked="checked"{/if}/> {tr}All words{/tr}</label>
+					<label class="radio-inline"><input type="radio" name="join" value="OR" {if $smarty.request.join == 'OR'}checked="checked"{/if}/> {tr}Any word{/tr}</label>
 				{/forminput}
 			</div>
 
 			<div class="form-group">
-				<label class="checkbox"><input name="content_limit" type="checkbox" {if !empty($smarty.request.content_type_guid)}checked="checked"{/if} onclick="$('#contentlimit').toggle();">{tr}Limit search to types{/tr}</label>
-				<div class="well" id="contentlimit" {if empty($smarty.request.content_type_guid)}style="display:none;"{/if}>
-					{html_checkboxes options=$contentTypes name=content_type_guid selected=$smarty.request.content_type_guid}
-				</div>
+				{forminput label="checkbox"}
+					<input name="content_limit" type="checkbox" {if !empty($smarty.request.content_type_guid)}checked="checked"{/if} onclick="$('#contentlimit').toggle();">{tr}Limit search to types{/tr}
+					<div class="well" id="contentlimit" {if empty($smarty.request.content_type_guid)}style="display:none;"{/if}>
+						{html_checkboxes options=$contentTypes name=content_type_guid selected=$smarty.request.content_type_guid}
+					</div>
+				{/forminput}
 			</div>
 
 			<div class="form-group submit">
