@@ -24,7 +24,7 @@ class iLike extends BitBase {
 	 */
 	function search( &$pSearchHash ) {
 		// PHP compatability issues
-		include_once( UTIL_PKG_PATH.'PHP_Compat/Compat/Function/stripos.php' );
+		include_once( UTIL_PKG_INC.'PHP_Compat/Compat/Function/stripos.php' );
 		global $gLibertySystem, $gBitSystem, $gBitUser, $gBitDbType;
 
 		// initiate stuff
