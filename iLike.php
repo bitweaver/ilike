@@ -23,8 +23,6 @@ class iLike extends BitBase {
 	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
 	function search( &$pSearchHash ) {
-		// PHP compatability issues
-		include_once( UTIL_PKG_INCLUDE_PATH.'PHP_Compat/Compat/Function/stripos.php' );
 		global $gLibertySystem, $gBitSystem, $gBitUser, $gBitDbType;
 
 		// initiate stuff
@@ -156,14 +154,9 @@ class iLike extends BitBase {
 		static $sPermObjects;
 
 		if( empty( $sPermObjects[$pContentType]['content_object'] )) {
-			$contentTypes = $gLibertySystem->mContentTypes;
-			if( !empty( $contentTypes[$pContentType] )) {
-				$type = &$contentTypes[$pContentType];
-				// create *one* object for each object *type* to  call virtual methods.
-				if( $gBitSystem->isPackageActive( $type['handler_package'] ) ) {
-					include_once( $gBitSystem->mPackages[$type['handler_package']]['path'].$type['handler_file'] );
-					$sPermObjects[$pContentType]['content_object'] = new $type['handler_class']();
-				}
+			// create *one* object for each object *type* to  call virtual methods.
+			if( $typeClass = $gLibertySystem->getContentClassName( $pContentType ) ) {
+				$sPermObjects[$pContentType]['content_object'] = new $typeClass();
 			}
 		}
 
@@ -183,7 +176,7 @@ class iLike extends BitBase {
 	 * @access public
 	 * @return boolean TRUE on success, FALSE on failure - $this->mErrors will contain reason for failure
 	 */
-	function prepareSearchSql( &$pSearchHash, &$pWhereSql, &$pBindVars, $pIsService = FALSE ) {
+	static function prepareSearchSql( &$pSearchHash, &$pWhereSql, &$pBindVars, $pIsService = FALSE ) {
 		global $gBitDbType;
 		$errors = FALSE;
 
