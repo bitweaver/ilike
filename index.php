@@ -1,6 +1,6 @@
 <?php
 // Initialization
-require_once( '../kernel/setup_inc.php' );
+require_once( '../kernel/includes/setup_inc.php' );
 require_once( ILIKE_PKG_PATH.'iLike.php');
 
 $gBitSystem->verifyPackage( 'ilike' );
