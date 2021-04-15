@@ -5,15 +5,12 @@ define( 'LIBERTY_SERVICE_ILIKE', 'search' );
 
 $registerHash = array(
 	'package_name' => 'ilike',
-	'package_path' => dirname( __FILE__ ).'/',
+	'package_path' => dirname( dirname( __FILE__ ) ).'/',
 	'service' => LIBERTY_SERVICE_ILIKE,
 );
 $gBitSystem->registerPackage( $registerHash );
 
 if( $gBitSystem->isPackageActive( 'ilike' ) && $gBitUser->hasPermission( 'p_ilike_search' ) ) {
-
-	require_once( ILIKE_PKG_PATH.'iLike.php' );
-
 	$menuHash = array(
 		'package_name'  => ILIKE_PKG_NAME,
 		'index_url'     => ILIKE_PKG_URL.'index.php',
@@ -27,4 +24,3 @@ if( $gBitSystem->isPackageActive( 'ilike' ) && $gBitUser->hasPermission( 'p_ilik
 		'content_search_tpl'		=> 'bitpackage:ilike/search_inc.tpl'
 	) );
 }
-?>
