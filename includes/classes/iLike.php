@@ -64,7 +64,7 @@ class iLike extends BitBase {
 		}
 
 		// get service SQL
-		LibertyContent::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, NULL, $pSearchHash );
+		self::getServicesSql( 'content_list_sql_function', $selectSql, $joinSql, $whereSql, $bindVars, NULL, $pSearchHash );
 
 		if( !empty( $pSearchHash['sort_mode'] )) {
 			$orderSql = " ORDER BY lc.".$this->mDb->convertSortmode( $pSearchHash['sort_mode'] );
@@ -138,6 +138,42 @@ class iLike extends BitBase {
 			return $ret;
 		} else {
 			return FALSE;
+		}
+	}
+
+	/**
+	* Set up SQL strings for services used by the object
+	* TODO: set this function deprecated and eventually nuke it
+	*/
+	static protected function getServicesSql( $pServiceFunction, &$pSelectSql, &$pJoinSql, &$pWhereSql, &$pBindVars, $pObject = NULL, &$pParamHash = NULL ) {
+		//deprecated( 'You package is calling the deprecated LibertyContent::getServicesSql() method. Please update your code to use LibertyContent::getLibertySql' );
+		global $gLibertySystem;
+		if( $loadFuncs = $gLibertySystem->getServiceValues( $pServiceFunction ) ) {
+			foreach( $loadFuncs as $func ) {
+				if( function_exists( $func ) ) {
+					if( !empty( $pObject ) && is_object( $pObject ) ) {
+						$loadHash = $func( $pObject, $pParamHash );
+					} else {
+						$loadHash = $func( (!empty( $pObject ) ? $this : NULL), $pParamHash );
+					}
+					if( !empty( $loadHash['select_sql'] ) ) {
+						$pSelectSql .= $loadHash['select_sql'];
+					}
+					if( !empty( $loadHash['join_sql'] ) ) {
+						$pJoinSql .= $loadHash['join_sql'];
+					}
+					if( !empty( $loadHash['where_sql'] ) ) {
+						$pWhereSql .= $loadHash['where_sql'];
+					}
+					if( !empty( $loadHash['bind_vars'] ) ) {
+						if ( is_array( $pBindVars ) ) {
+							$pBindVars = array_merge( $pBindVars, $loadHash['bind_vars'] );
+						} else {
+							$pBindVars = $loadHash['bind_vars'];
+						}
+					}
+				}
+			}
 		}
 	}
 
