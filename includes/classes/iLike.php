@@ -310,7 +310,7 @@ function ilike_relevance_sort( $pHash ) {
  * @access public
  * @return boolean TRUE on success, FALSE on failure - $this->mErrors will contain reason for failure
  */
-function ilike_content_list_sql( &$pObject, &$pParamHash=NULL ) {
+function ilike_content_list_sql( $pObject, &$pParamHash=NULL ) {
 	global $gBitSystem, $gBitDbType;
 	$ret = array();
 
